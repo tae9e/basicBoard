@@ -4,6 +4,7 @@ import com.basic.board.domain.Post;
 import com.basic.board.repository.PostRepository;
 import com.basic.board.request.PostCreate;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,12 +13,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
-
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -118,6 +116,32 @@ class PostControllerTest {
                         "id").value(post.getId()))
                 .andExpect(jsonPath("$.title").value("제목 ㅎㅎ12334567493939292"))
                 .andExpect(jsonPath("$.content").value("haha"))
+                .andDo(print());
+
+    }
+
+    @Test
+    @DisplayName("글 조회")
+    void test5() throws Exception {
+        //given
+        Post post = Post.builder().title("제목 ㅎㅎ12334567493939292").content("haha").build();
+        postRepository.save(post);
+
+        Post post2 = Post.builder().title("제목 11236").content("ha12424").build();
+        postRepository.save(post2);
+
+        //클라이언트 요구사항 -> json 응답에서 title값 길이를 최대 10글자로 해주세요
+
+        //expected
+        mockMvc.perform(get("/posts") //application/json 형태로 보냄, key-value 형태
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                //json의 길이 구하기
+                .andExpect(jsonPath("$.length()", Matchers.is(2)))
+                .andExpect(jsonPath("$[0].id").value(post.getId()))
+                .andExpect(jsonPath("$[0].title").value("제목 ㅎㅎ12334567493939292"))
+                .andExpect(jsonPath("$[0].content").value("haha"))
+
                 .andDo(print());
 
     }

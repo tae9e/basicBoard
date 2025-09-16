@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -44,15 +46,21 @@ public class PostController {
     /**
      * posts -> 글 전체 조회(검색 + 페이징)
      * /posts/{postId} -> 글 한 개만 조회
+     * /posts          -> 여러 개의 글 조회
      */
 
     @GetMapping("/posts/{postId}")
-    public PostResponse get(@PathVariable(name="postId") Long id){
+    public PostResponse get(@PathVariable(name="postId") Long postId){
         // Request 클래스(PostCreate)
         // Response 클래스(PostResponse)
-        PostResponse response = postService.get(id);
+        return postService.get(postId);
         //응답 클래스 분리!!(서비스 정책에 맞는 응답 전용 클래스)
-        return response;
+
+    }
+
+    @GetMapping("/posts")
+    public List<PostResponse> getList(){
+        return postService.getList();
     }
 
 
