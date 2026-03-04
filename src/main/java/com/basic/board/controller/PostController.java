@@ -15,7 +15,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 public class PostController {
-    // board controller...
+    // hello test
     // get, post, put, patch, delete, options, head, trace, connect .. http method 종류
     // 글 등록 -> post method
     private final PostService postService;
